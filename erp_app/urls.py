@@ -2,5 +2,5 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('',('erp_app.urls')),
+    path('',index,name='index'),
 ]
