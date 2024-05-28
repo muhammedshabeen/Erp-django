@@ -1,0 +1,62 @@
+{% extends 'index1.html' %}
+{% block title %}Dashboard - ABC{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="card">
+            <h5 class="card-header">Users</h5>
+            <a href="{% url 'add_user' %}" class="btn btn-primary w-20 ms-auto">Add User</a>
+            <div class="table-responsive text-nowrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>phone Number</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                {% for i in users %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{i.username}}</td>
+                    <td>{{i.email}}</td>
+                    <td>{{i.phone}}</td>
+                    <td><span class="badge
+                        {% if i.status == 'Active' %}
+                            bg-label-success 
+                        {% elif i.status == 'Inactive' %}
+                            bg-label-info
+                        {% elif i.status == 'Deleted' %}
+                            bg-label-danger
+                        {% else %}
+                            bg-label-warning
+                        {% endif %}
+                         me-1">{{i.status}}</span></td>
+                    <td>
+                    <div class="dropdown">
+                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0);"
+                            ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                        >
+                        <a class="dropdown-item" href="javascript:void(0);"
+                            ><i class="bx bx-trash me-1"></i> Delete</a
+                        >
+                        </div>
+                    </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

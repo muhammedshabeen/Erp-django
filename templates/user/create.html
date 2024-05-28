@@ -1,0 +1,70 @@
+{% extends 'index1.html' %}
+{% block title %}Dashboard - ABC{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="py-3 mb-4"><span class="text-muted fw-light">Users /</span> Add User</h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                {% comment %} <h5 class="card-header">Basic</h5> {% endcomment %}
+                <div class="card-body demo-vertical-spacing demo-only-element">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Username</label>
+                                <div class="input-group">
+                                    {{ form.username }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-password-toggle">
+                                    <label class="form-label" for="basic-default-password12">Password</label>
+                                    <div class="input-group">
+                                        {{ form.password }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Email</label>
+                                <div class="input-group">
+                                    {{ form.email }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Phone</label>
+                                <div class="input-group">
+                                    {{ form.phone }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Usertype</label>
+                                <div class="input-group">
+                                    {{ form.user_type }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">status</label>
+                                <div class="input-group">
+                                    {{ form.status }}
+                                </div>
+                            </div>
+                        </div>
+                        <input type='submit' class="btn btn-primary" value='Submit'>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
