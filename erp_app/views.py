@@ -39,7 +39,6 @@ def add_user(request):
     context = {}
     if request.method == 'POST':
         form=UserForm(request.POST)
-        print("FOOOOOOO",form)
         if form.is_valid():
             form.save()
             messages.error(request,'User added succesfully')
