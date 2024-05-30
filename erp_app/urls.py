@@ -15,4 +15,6 @@ urlpatterns = [
     #User
     path('user-view',user_view,name='user_view'),
     path('create-user',add_user,name='add_user'),
+    path('edit-user/<int:pk>',edit_user,name='edit_user'),
+    path('delete-user/<int:pk>',delete_user,name='delete_user'),
 ]

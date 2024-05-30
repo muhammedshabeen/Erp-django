@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     
     #app
     'erp_app',
+    
+    'django_filters',
 ]
 
 MIDDLEWARE = [

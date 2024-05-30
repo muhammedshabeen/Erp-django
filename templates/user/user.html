@@ -1,98 +1,130 @@
 {% extends 'index1.html' %}
+{% load custom_filters %}
 {% block title %}Dashboard - ABC{% endblock %}
+
 {% block content %}
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="card mb-4">
-            <h5 class="card-header">Bootstrap Toasts Example With Placement</h5>
-            <div class="card-body">
-              <div class="row gx-3 gy-2 align-items-center">
-                <div class="col-md-3">
-                  <label class="form-label" for="selectTypeOpt">Type</label>
-                  <select id="selectTypeOpt" class="form-select color-dropdown">
-                    <option value="bg-primary" selected>Primary</option>
-                    <option value="bg-secondary">Secondary</option>
-                    <option value="bg-success">Success</option>
-                    <option value="bg-danger">Danger</option>
-                    <option value="bg-warning">Warning</option>
-                    <option value="bg-info">Info</option>
-                    <option value="bg-dark">Dark</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label" for="selectPlacement">Placement</label>
-                  <select class="form-select placement-dropdown" id="selectPlacement">
-                    <option value="top-0 start-0">Top left</option>
-                    <option value="top-0 start-50 translate-middle-x">Top center</option>
-                    <option value="top-0 end-0">Top right</option>
-                    <option value="top-50 start-0 translate-middle-y">Middle left</option>
-                    <option value="top-50 start-50 translate-middle">Middle center</option>
-                    <option value="top-50 end-0 translate-middle-y">Middle right</option>
-                    <option value="bottom-0 start-0">Bottom left</option>
-                    <option value="bottom-0 start-50 translate-middle-x">Bottom center</option>
-                    <option value="bottom-0 end-0">Bottom right</option>
-                  </select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                  <button id="showToastPlacement" class="btn btn-primary d-block">Show Toast</button>
-                </div>
-              </div>
-            </div>
-          </div>
         <div class="card">
             <h5 class="card-header">Users</h5>
-            <a href="{% url 'add_user' %}" class="btn btn-primary w-20 ms-auto">Add User</a>
-            <div class="table-responsive text-nowrap">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>phone Number</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
-                {% for i in users %}
-                <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{i.username}}</td>
-                    <td>{{i.email}}</td>
-                    <td>{{i.phone}}</td>
-                    <td><span class="badge
-                        {% if i.status == 'Active' %}
-                            bg-label-success 
-                        {% elif i.status == 'Inactive' %}
-                            bg-label-info
-                        {% elif i.status == 'Deleted' %}
-                            bg-label-danger
-                        {% else %}
-                            bg-label-warning
-                        {% endif %}
-                         me-1">{{i.status}}</span></td>
-                    <td>
-                    <div class="dropdown">
-                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                        <i class="bx bx-dots-vertical-rounded"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                        <a class="dropdown-item" href="javascript:void(0);"
-                            ><i class="bx bx-edit-alt me-1"></i> Edit</a
-                        >
-                        <a class="dropdown-item" href="javascript:void(0);"
-                            ><i class="bx bx-trash me-1"></i> Delete</a
-                        >
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="container mt-1">
+              <form method="get" class="row g-3">
+                  <div class="col-md-3">
+                      {{ user_filter.form.username }}
+                  </div>
+                  <div class="col-md-3">
+                      {{ user_filter.form.email }}
+                  </div>
+                  <div class="col-md-2">
+                      {{ user_filter.form.status }}
+                  </div>
+                  <a href="{% url 'user_view' %}" class="btn btn-icon btn-secondary"><span class="tf-icons bx bx-reset"></span></a>
+                  <div class="col-md-1 ">
+                      <button type="submit" class="btn btn-primary ">Filter</button>
+                  </div>
+              </form>
             </div>
+            
+            <a href="{% url 'add_user' %}" class="btn btn-primary btn-md" style="width: fit-content;
+            margin-left: auto;margin-right:9px">Add User</a>
+            <div class="table-responsive text-nowrap">
+              <table class="table">
+                  <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>phone Number</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody class="table-border-bottom-0">
+                  {% for i in page_obj %}
+                  <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{i.username}}</td>
+                      <td>{{i.email}}</td>
+                      <td>{{i.phone}}</td>
+                      <td><span class="badge
+                          {% if i.status == 'Active' %}
+                              bg-label-success 
+                          {% elif i.status == 'Inactive' %}
+                              bg-label-info
+                          {% elif i.status == 'Deleted' %}
+                              bg-label-danger
+                          {% else %}
+                              bg-label-warning
+                          {% endif %}
+                          me-1">{{i.status}}</span></td>
+                      <td>
+                      <div class="dropdown">
+                          <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-vertical-rounded"></i>
+                          </button>
+                          <div class="dropdown-menu">
+                          <a class="dropdown-item" href="{% url 'edit_user' i.id %}?page={{ request.GET.page|default:'1' }}&username={{ request.GET.username }}&status={{ request.GET.status }}&email={{ request.GET.email }}"
+                              ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                          >
+                          <a class="dropdown-item" href="{% url 'delete_user' i.id %}?page={{ request.GET.page|default:'1' }}&username={{ request.GET.username }}&status={{ request.GET.status }}&email={{ request.GET.email }}"
+                              ><i class="bx bx-trash me-1"></i> Delete</a
+                          >
+                          </div>
+                      </div>
+                      </td>
+                      
+                  </tr>
+                  
+                  {% endfor %}
+                  </tbody>
+                
+              </table>
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                  {% if page_obj.has_previous %}
+                      <li class="page-item prev">
+                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for field, value in user_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                          </a>
+                      </li>
+                  {% else %}
+                      <li class="page-item prev disabled">
+                          <a class="page-link" href="#" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                          </a>
+                      </li>
+                  {% endif %}
+                  
+                  {% for num in page_obj.paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          <li class="page-item active">
+                              <a class="page-link" href="#">{{ num }}</a>
+                          </li>
+                      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ num }}{% for field, value in user_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                          </li>
+                      {% endif %}
+                  {% endfor %}
+                  
+                  {% if page_obj.has_next %}
+                      <li class="page-item next">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for field, value in user_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </li>
+                  {% else %}
+                      <li class="page-item next disabled">
+                          <a class="page-link" href="#" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </li>
+                  {% endif %}
+              </ul>
+            </nav>
+          
+          
         </div>
     </div>
 </div>

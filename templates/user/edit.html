@@ -1,5 +1,5 @@
 {% extends 'index1.html' %}
-{% block title %}Dashboard - ABC{% endblock %}
+{% block title %}Dashboard - Edit User ABC{% endblock %}
 {% block content %}
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -23,7 +23,7 @@
                                 <div class="form-password-toggle">
                                     <label class="form-label" for="basic-default-password12">Password</label>
                                     <div class="input-group">
-                                        {{ form.password }}
+                                        {{ form.email }}
                                         </span>
                                     </div>
                                 </div>
@@ -34,13 +34,13 @@
                             <div class="col-md-6">
                                 <label class="form-label" for="basic-default-password12">Email</label>
                                 <div class="input-group">
-                                    {{ form.email }}
+                                    {{ form.phone }}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="basic-default-password12">Phone</label>
                                 <div class="input-group">
-                                    {{ form.phone }}
+                                    {{ form.user_type }}
                                 </div>
                             </div>
                         </div>
@@ -49,18 +49,17 @@
                             <div class="col-md-6">
                                 <label class="form-label" for="basic-default-password12">Usertype</label>
                                 <div class="input-group">
-                                    {{ form.user_type }}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label" for="basic-default-password12">status</label>
-                                <div class="input-group">
                                     {{ form.status }}
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                {% comment %} <label class="form-label" for="basic-default-password12">status</label> {% endcomment %}
+                                <div class="input-group">
+                                    {{ form.password.as_hidden }}
+                                </div>
+                            </div>
                         </div>
-                        <input type='submit' class="btn btn-primary " value='Submit'>
-                        <a href="{% url 'user_view' %}" class="btn btn-secondary ">Go Back</a>
+                        <input type='submit' class="btn btn-primary" value='Submit'>
                     </form>
                 </div>
                 </div>
