@@ -28,58 +28,66 @@
             <a href="{% url 'add_user' %}" class="btn btn-primary btn-md" style="width: fit-content;
             margin-left: auto;margin-right:9px">Add User</a>
             <div class="table-responsive text-nowrap">
-              <table class="table">
-                  <thead>
-                  <tr>
-                      <th>#</th>
-                      <th>Username</th>
-                      <th>Email</th>
-                      <th>phone Number</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                  </tr>
-                  </thead>
-                  <tbody class="table-border-bottom-0">
-                  {% for i in page_obj %}
-                  <tr>
-                      <td>{{forloop.counter}}</td>
-                      <td>{{i.username}}</td>
-                      <td>{{i.email}}</td>
-                      <td>{{i.phone}}</td>
-                      <td><span class="badge
-                          {% if i.status == 'Active' %}
-                              bg-label-success 
-                          {% elif i.status == 'Inactive' %}
-                              bg-label-info
-                          {% elif i.status == 'Deleted' %}
-                              bg-label-danger
-                          {% else %}
-                              bg-label-warning
-                          {% endif %}
-                          me-1">{{i.status}}</span></td>
-                      <td>
-                      <div class="dropdown">
-                          <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                          <i class="bx bx-dots-vertical-rounded"></i>
-                          </button>
-                          <div class="dropdown-menu">
-                          <a class="dropdown-item" href="{% url 'edit_user' i.id %}?page={{ request.GET.page|default:'1' }}&username={{ request.GET.username }}&status={{ request.GET.status }}&email={{ request.GET.email }}"
-                              ><i class="bx bx-edit-alt me-1"></i> Edit</a
-                          >
-                          <a class="dropdown-item" href="{% url 'delete_user' i.id %}?page={{ request.GET.page|default:'1' }}&username={{ request.GET.username }}&status={{ request.GET.status }}&email={{ request.GET.email }}"
-                              ><i class="bx bx-trash me-1"></i> Delete</a
-                          >
-                          </div>
-                      </div>
-                      </td>
-                      
-                  </tr>
-                  
-                  {% endfor %}
-                  </tbody>
-                
-              </table>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>phone Number</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    {% if page_obj and page_obj.object_list %}
+                    {% for i in page_obj %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{i.username}}</td>
+                        <td>{{i.email}}</td>
+                        <td>{{i.phone}}</td>
+                        <td><span class="badge
+                            {% if i.status == 'Active' %}
+                                bg-label-success 
+                            {% elif i.status == 'Inactive' %}
+                                bg-label-info
+                            {% elif i.status == 'Deleted' %}
+                                bg-label-danger
+                            {% else %}
+                                bg-label-warning
+                            {% endif %}
+                            me-1">{{i.status}}</span></td>
+                        <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                            <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'edit_user' i.id %}?page={{ request.GET.page|default:'1' }}&username={{ request.GET.username }}&status={{ request.GET.status }}&email={{ request.GET.email }}"
+                                ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                            >
+                            <a class="dropdown-item" href="{% url 'delete_user' i.id %}?page={{ request.GET.page|default:'1' }}&username={{ request.GET.username }}&status={{ request.GET.status }}&email={{ request.GET.email }}"
+                                ><i class="bx bx-trash me-1"></i> Delete</a
+                            >
+                            </div>
+                        </div>
+                        </td>
+                        
+                    </tr>
+                    
+                    {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center"><h3>Nothing to be found</h3></td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                    
+                </table>
             </div>
+            
+            {% if page_obj %}    
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
                   {% if page_obj.has_previous %}
@@ -123,7 +131,7 @@
                   {% endif %}
               </ul>
             </nav>
-          
+            {% endif %}
           
         </div>
     </div>

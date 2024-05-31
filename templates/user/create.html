@@ -24,6 +24,8 @@
                                     <label class="form-label" for="basic-default-password12">Password</label>
                                     <div class="input-group">
                                         {{ form.password }}
+                                        <span class="input-group-text" id="basic-addon2" >
+                                            <i class="bx bx-hide" id="togglePasswordIcon" onclick="togglePassword()"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -68,4 +70,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    function togglePassword() {
+        var passwordField = document.getElementById("id_password");
+        console.log("asasasa",passwordField.type)
+        var toggleIcon = document.getElementById("togglePasswordIcon");
+        if (passwordField.type == "password") {
+            passwordField.type = "text";
+            console.log("kusususus",passwordField.type)
+            toggleIcon.classList.remove("bx-hide");
+            toggleIcon.classList.add("bx-show");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove("bx-show");
+            toggleIcon.classList.add("bx-hide");
+        }
+    }
+</script>
 {% endblock %}

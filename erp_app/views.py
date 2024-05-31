@@ -107,8 +107,8 @@ def delete_user(request,pk):
 
 def main_task_view(request):
     context = {}
-    user_list = MainTask.objects.all().order_by('-id')
-    main_task_filter = MainTaskFilter(request.GET, queryset=user_list)
+    main_tasks = MainTask.objects.all().order_by('-id')
+    main_task_filter = MainTaskFilter(request.GET, queryset=main_tasks)
     paginator = Paginator(main_task_filter.qs, 7)
 
     page_number = request.GET.get('page')
@@ -130,7 +130,7 @@ def add_main_task(request):
             for field_name, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, "{}".format(error))
-            context['form'] = UserForm(request.POST)
+            context['form'] = MainTaskForm(request.POST)
             return render(request,'task/main_task/create.html',context)
     else:
         form = MainTaskForm()
@@ -177,4 +177,75 @@ def delete_main_task(request,pk):
     return redirect(main_task_view)
     
             
+            
+
+def view_task(request):
+    context = {}
+    sub_tasks = Task.objects.all().order_by('-id')
+    sub_task_filter = TaskFilter(request.GET, queryset=sub_tasks)
+    paginator = Paginator(sub_task_filter.qs, 7)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
+    context['sub_task_filter'] = sub_task_filter
+    return render(request,'task/sub_task/view.html',context)
+
+
+
+def add_sub_task(request):
+    context = {}
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Sub task added successfully")
+            return redirect('view_task')
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+            context['form'] = TaskForm(request.POST)
+            return render(request,'task/sub_task/create.html',context)
+    context['form'] = TaskForm()
+    return render(request,'task/sub_task/create.html',context)
+            
+            
+def edit_sub_task(request,pk):
+    context = {}
+    sub_task = Task.objects.get(id=pk)
+    form = TaskForm(instance=sub_task)
+    if request.method == 'POST':
+        form = TaskForm(request.POST,instance=sub_task)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Task edited successfully")
+            params = request.GET.copy()
+            redirect_url = reverse('view_task')
+            if params:
+                redirect_url += '?' + params.urlencode()
+                return redirect(redirect_url)
+            return redirect(redirect_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    context['form'] = form
+    return render(request,'task/sub_task/edit.html',context)
+
+
+def sub_task_delete(request,pk):
+    try:
+        sub_task = Task.objects.get(id=pk)
+        sub_task.delete()
+    except Task.DoesNotExist:
+        messages.info(request,"Task doesnot exist")
+    params = request.GET.copy()
+    redirect_url = reverse('view_task')
+    messages.success(request,"Task deleted succesfully")
+    if params:
+        redirect_url += '?' + params.urlencode()
+        return redirect(redirect_url)
+    return redirect(redirect_url)
+    
             

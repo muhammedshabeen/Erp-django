@@ -73,6 +73,9 @@ class UserModel(AbstractUser):
 
     objects = CustomUserManager()
     
+    def __str__(self):
+        return self.username
+    
 class MainTask(BaseContent):
     name = models.CharField(max_length=100)
     
@@ -95,4 +98,8 @@ class Task(BaseContent):
         ('Under Review', 'Under Review'),
         ('Blocked', 'Blocked'),
     ))
-    duration = models.DurationField(default=0)
+    # duration = models.IntegerField(default=0)
+    time_duration = models.IntegerField()
+    
+    def __str__(self):
+        return self.description

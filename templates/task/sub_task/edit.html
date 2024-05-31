@@ -1,0 +1,75 @@
+{% extends 'index1.html' %}
+{% block title %}Edit Sub Task{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="py-3 mb-4"><span class="text-muted fw-light">Task /</span> Edit Sub Task</h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                {% comment %} <h5 class="card-header">Basic</h5> {% endcomment %}
+                <div class="card-body demo-vertical-spacing demo-only-element">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Main Task</label>
+                                <div class="input-group">
+                                    {{ form.main_task }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-password-toggle">
+                                    <label class="form-label" for="basic-default-password12">Description</label>
+                                    <div class="input-group">
+                                        {{ form.description }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Assigned To</label>
+                                <div class="input-group">
+                                    {{ form.user }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-password-toggle">
+                                    <label class="form-label" for="basic-default-password12">Time Duration</label>
+                                    <div class="input-group">
+                                        {{ form.time_duration }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Task Status</label>
+                                <div class="input-group">
+                                    {{ form.task_status }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-password-toggle">
+                                    <label class="form-label" for="basic-default-password12">Status</label>
+                                    <div class="input-group">
+                                        {{ form.status }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type='submit' class="btn btn-primary " value='Submit'>
+                        <a href="{% url 'view_task' %}" class="btn btn-secondary ">Go Back</a>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -24,4 +24,11 @@ urlpatterns = [
     path('add-task',add_main_task,name='add_main_task'),
     path('edit-task/<int:pk>',edit_main_task,name='edit_main_task'),
     path('delete-task/<int:pk>',delete_main_task,name='delete_main_task'),
+    
+    
+    #SubTask
+    path('sub-task',view_task,name='view_task'),
+    path('create-sub-task',add_sub_task,name='add_sub_task'),
+    path('edit-sub-task/<int:pk>',edit_sub_task,name='edit_sub_task'),
+    path('delete-sub-task/<int:pk>',sub_task_delete,name='sub_task_delete'),
 ]
