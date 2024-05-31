@@ -12,3 +12,14 @@ class UserForm(forms.ModelForm):
         super(UserForm, self).__init__(*args, **kwargs)
         for name in self.fields.keys():
             self.fields[name].widget.attrs.update({'class':'form-control'})
+            
+            
+class MainTaskForm(forms.ModelForm):
+    class Meta:
+        model = MainTask
+        fields = ['name','status']
+    
+    def __init__(self, *args, **kwargs):
+        super(MainTaskForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({'class':'form-control'})

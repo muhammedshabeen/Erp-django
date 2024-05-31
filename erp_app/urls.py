@@ -17,4 +17,11 @@ urlpatterns = [
     path('create-user',add_user,name='add_user'),
     path('edit-user/<int:pk>',edit_user,name='edit_user'),
     path('delete-user/<int:pk>',delete_user,name='delete_user'),
+    
+    
+    #MainTask
+    path('main-task',main_task_view,name='main_task_view'),
+    path('add-task',add_main_task,name='add_main_task'),
+    path('edit-task/<int:pk>',edit_main_task,name='edit_main_task'),
+    path('delete-task/<int:pk>',delete_main_task,name='delete_main_task'),
 ]

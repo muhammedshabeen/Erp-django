@@ -102,3 +102,79 @@ def delete_user(request,pk):
         redirect_url += '?' + params.urlencode()
         return redirect(redirect_url)
     return redirect('user_view')
+
+
+
+def main_task_view(request):
+    context = {}
+    user_list = MainTask.objects.all().order_by('-id')
+    main_task_filter = MainTaskFilter(request.GET, queryset=user_list)
+    paginator = Paginator(main_task_filter.qs, 7)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
+    context['main_task_filter'] = main_task_filter
+    return render(request,'task/main_task/view.html',context)
+
+
+def add_main_task(request):
+    context = {}
+    if request.method == 'POST':
+        form = MainTaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Task addedd successfully')
+            return redirect('main_task_view')
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+            context['form'] = UserForm(request.POST)
+            return render(request,'task/main_task/create.html',context)
+    else:
+        form = MainTaskForm()
+        context['form'] = form
+        return render(request,'task/main_task/create.html',context)   
+
+
+def edit_main_task(request,pk):
+    context = {}
+    main_task = MainTask.objects.get(id=pk)     
+    form = MainTaskForm(instance=main_task)
+    if request.method == 'POST':
+        form = MainTaskForm(request.POST,instance=main_task)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Task edited succesfully")
+            params = request.GET.copy()
+            redirect_url = reverse('main_task_view') 
+            if params:
+                redirect_url += '?' + params.urlencode()
+                return redirect(redirect_url)
+            return redirect(redirect_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    context['form'] = form
+    return render(request,'task/main_task/edit.html',context)
+
+
+
+def delete_main_task(request,pk):
+    try:
+        task = MainTask.objects.get(id=pk)
+        task.delete()
+    except MainTask.DoesNotExist:
+        messages.info(request,"Task doesnot exist")
+    params = request.GET.copy()
+    redirect_url = reverse('main_task_view') 
+    messages.success(request,"Task deleted successfully")
+    if params:
+        redirect_url += '?' + params.urlencode()
+        return redirect(redirect_url)
+    return redirect(main_task_view)
+    
+            
+            

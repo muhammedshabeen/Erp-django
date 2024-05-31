@@ -31,5 +31,7 @@ class CustomUserAdmin(UserAdmin):
     # Filter options
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'user_type', 'status')
 admin.site.register(UserModel, CustomUserAdmin)
+admin.site.register(MainTask)
+admin.site.register(Task)
 
 

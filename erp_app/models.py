@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from .utils import *
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -71,3 +72,27 @@ class UserModel(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+    
+class MainTask(BaseContent):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+    
+    
+
+class Task(BaseContent):
+    main_task = models.ForeignKey(MainTask,on_delete=models.CASCADE)
+    description = models.TextField()
+    user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
+    task_status = models.CharField(default='Assigned',max_length=20,choices=(
+        ('Assigned','Assigned'),
+        ('In Progress','In Progress'),
+        ('Completed', 'Completed'),
+        ('On Hold', 'On Hold'),
+        ('Cancelled', 'Cancelled'),
+        ('Delayed', 'Delayed'),
+        ('Under Review', 'Under Review'),
+        ('Blocked', 'Blocked'),
+    ))
+    duration = models.DurationField(default=0)

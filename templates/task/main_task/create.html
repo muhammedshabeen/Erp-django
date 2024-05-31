@@ -1,0 +1,45 @@
+{% extends 'index1.html' %}
+{% block title %}Add Task{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="py-3 mb-4"><span class="text-muted fw-light">Task /</span> Add Task</h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                {% comment %} <h5 class="card-header">Basic</h5> {% endcomment %}
+                <div class="card-body demo-vertical-spacing demo-only-element">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Title</label>
+                                <div class="input-group">
+                                    {{ form.name }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-password-toggle">
+                                    <label class="form-label" for="basic-default-password12">Status</label>
+                                    <div class="input-group">
+                                        {{ form.status }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                        <input type='submit' class="btn btn-primary " value='Submit'>
+                        <a href="{% url 'main_task_view' %}" class="btn btn-secondary ">Go Back</a>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

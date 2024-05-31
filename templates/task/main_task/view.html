@@ -1,0 +1,120 @@
+{% extends 'index1.html' %}
+{% load custom_filters %}
+{% block title %}Task{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="card">
+            <h5 class="card-header">Task</h5>
+            <div class="container mt-1">
+              <form method="get" class="row g-3">
+                  <div class="col-md-3">
+                      {{ main_task_filter.form.name }}
+                  </div>
+                  <div class="col-md-2">
+                      {{ main_task_filter.form.status }}
+                  </div>
+                  <a href="{% url 'main_task_view' %}" class="btn btn-icon btn-secondary"><span class="tf-icons bx bx-reset"></span></a>
+                  <div class="col-md-1 ">
+                      <button type="submit" class="btn btn-primary ">Filter</button>
+                  </div>
+              </form>
+            </div>
+            
+            <a href="{% url 'add_main_task' %}" class="btn btn-primary btn-md" style="width: fit-content;
+            margin-left: auto;margin-right:9px">Add Task</a>
+            <div class="table-responsive text-nowrap">
+              <table class="table">
+                  <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody class="table-border-bottom-0">
+                  {% for i in page_obj %}
+                  <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{i.name}}</td>
+                      <td><span class="badge
+                          {% if i.status == 'Active' %}
+                              bg-label-success 
+                          {% else %}
+                              bg-label-warning
+                          {% endif %}
+                          me-1">{{i.status}}</span></td>
+                      <td>
+                      <div class="dropdown">
+                          <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-vertical-rounded"></i>
+                          </button>
+                          <div class="dropdown-menu">
+                          <a class="dropdown-item" href="{% url 'edit_main_task' i.id %}?page={{ request.GET.page|default:'1' }}&name={{ request.GET.name }}&status={{ request.GET.status }}"
+                              ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                          >
+                          <a class="dropdown-item" href="{% url 'delete_main_task' i.id %}?page={{ request.GET.page|default:'1' }}&name={{ request.GET.name }}&status={{ request.GET.status }}"
+                              ><i class="bx bx-trash me-1"></i> Delete</a
+                          >
+                          </div>
+                      </div>
+                      </td>
+                      
+                  </tr>
+                  
+                  {% endfor %}
+                  </tbody>
+                
+              </table>
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                  {% if page_obj.has_previous %}
+                      <li class="page-item prev">
+                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for field, value in main_task_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                          </a>
+                      </li>
+                  {% else %}
+                      <li class="page-item prev disabled">
+                          <a class="page-link" href="#" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                          </a>
+                      </li>
+                  {% endif %}
+                  
+                  {% for num in page_obj.paginator.page_range %}
+                      {% if page_obj.number == num %}
+                          <li class="page-item active">
+                              <a class="page-link" href="#">{{ num }}</a>
+                          </li>
+                      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ num }}{% for field, value in main_task_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                          </li>
+                      {% endif %}
+                  {% endfor %}
+                  
+                  {% if page_obj.has_next %}
+                      <li class="page-item next">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for field, value in main_task_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </li>
+                  {% else %}
+                      <li class="page-item next disabled">
+                          <a class="page-link" href="#" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </li>
+                  {% endif %}
+              </ul>
+            </nav>
+          
+          
+        </div>
+    </div>
+</div>
+{% endblock %}
