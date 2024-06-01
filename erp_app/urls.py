@@ -12,6 +12,12 @@ urlpatterns = [
     path('signup-page',signup_page,name='signup_page'),
     path('log-out',logout_view,name='logout_view'),
     path('signin-page',signin_page,name='signin_page'),
+    path('forgot-password',forgot_password,name='forgot_password'),
+    path('redirect_url/<str:email>',redirect_url,name='redirect_url'),
+    path('otp_validate',otp_validate,name='otp_validate'),
+    
+    
+    
     
     #User
     path('user-view',user_view,name='user_view'),

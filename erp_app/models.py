@@ -54,6 +54,8 @@ class UserModel(AbstractUser):
         ('Deleted','Deleted'),
         ('Pending','Pending')
     ))
+    otp = models.CharField(max_length=50,null=True)
+    image = models.ImageField(upload_to='profile_image')
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='custom_user_groups',  # Add related_name here
