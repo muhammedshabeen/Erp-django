@@ -1,5 +1,5 @@
 {% extends 'index1.html' %}
-{% block title %}Dashboard - ABC{% endblock %}
+{% block title %}Add User{% endblock %}
 {% block content %}
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -24,7 +24,7 @@
                                     <label class="form-label" for="basic-default-password12">Password</label>
                                     <div class="input-group">
                                         {{ form.password }}
-                                        <span class="input-group-text" id="basic-addon2" >
+                                        <span class="input-group-text" id="basic-addon2" onclick="togglePassword()">
                                             <i class="bx bx-hide" id="togglePasswordIcon" onclick="togglePassword()"></i>
                                         </span>
                                     </div>
@@ -74,11 +74,9 @@
 <script>
     function togglePassword() {
         var passwordField = document.getElementById("id_password");
-        console.log("asasasa",passwordField.type)
         var toggleIcon = document.getElementById("togglePasswordIcon");
-        if (passwordField.type == "password") {
+        if (passwordField.type === "password") {
             passwordField.type = "text";
-            console.log("kusususus",passwordField.type)
             toggleIcon.classList.remove("bx-hide");
             toggleIcon.classList.add("bx-show");
         } else {

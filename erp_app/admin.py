@@ -33,5 +33,6 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(UserModel, CustomUserAdmin)
 admin.site.register(MainTask)
 admin.site.register(Task)
+admin.site.register(Notification)
 
 

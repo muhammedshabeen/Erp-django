@@ -53,6 +53,21 @@
 
     <div class="container-xxl">
       <div class="authentication-wrapper authentication-basic container-p-y">
+        {% if messages %}
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+            {% for message in messages %}
+                <div class="toast text-white d-none {% if message.tags == 'success' %}bg-primary{% elif message.tags == 'error' %}bg-danger{% endif %}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                    <div class="toast-header">
+                        <i class="bi bi-bell me-2"></i>
+                        <strong class="me-auto">{{message.tags}}</strong>
+                        <small>just now</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">{{ message }}</div>
+                </div><br>
+            {% endfor %}
+        </div>
+      {% endif %}
         <div class="authentication-inner">
           <!-- Register -->
           <div class="card">
@@ -109,22 +124,23 @@
                       </g>
                     </svg>
                   </span>
-                  <span class="app-brand-text demo text-body fw-bold">Sneat</span>
+                  <span class="app-brand-text demo text-body fw-bold">ABC ERP</span>
                 </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-2">Welcome to Sneat! 👋</h4>
-              <p class="mb-4">Please sign-in to your account and start the adventure</p>
+              <h4 class="mb-2">Welcome to ABC! 👋</h4>
+              <p class="mb-4"></p>
 
-              <form id="formAuthentication" class="mb-3" action="index.html">
+              <form id="formAuthentication" class="mb-3"  method="post" action="{% url 'signin_page' %}">
+                {% csrf_token %}
                 <div class="mb-3">
-                  <label for="email" class="form-label">Email or Username</label>
+                  <label for="email" class="form-label">Email</label>
                   <input
                     type="text"
                     class="form-control"
                     id="email"
-                    name="email-username"
-                    placeholder="Enter your email or username"
+                    name="email"
+                    placeholder="Enter your email"
                     autofocus />
                 </div>
                 <div class="mb-3 form-password-toggle">
@@ -145,12 +161,12 @@
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
                 </div>
-                <div class="mb-3">
+                {% comment %} <div class="mb-3">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="remember-me" />
                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                   </div>
-                </div>
+                </div> {% endcomment %}
                 <div class="mb-3">
                   <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
                 </div>
@@ -186,5 +202,19 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="{% static 'assets/js/ui-toasts.js' %}"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+          toastElList.map(function (toastEl) {
+              toastEl.classList.remove('d-none');  // Remove the d-none class
+              var option = {
+                  delay: 2000
+              }
+              var bsToast = new bootstrap.Toast(toastEl, option)
+              bsToast.show()
+          })
+      });
+    </script>
   </body>
 </html>

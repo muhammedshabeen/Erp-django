@@ -4,8 +4,11 @@ from .forms import *
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .filters import *
-from django.http import QueryDict
+from django.http import HttpResponse, QueryDict
 from django.urls import reverse
+from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 
 
 
@@ -18,10 +21,28 @@ def signup_page(request):
     return render(request,'signup.html')
 
 def signin_page(request):
+    if request.method == 'POST':
+        
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        print("POST METHOD",email,password)
+        user = authenticate(request, username=email, password=password)
+        print("USER IS",user)
+        if user is not None:
+            login(request, user)
+            return redirect('home_page')  # Redirect to the home page or another page
+        else:
+            messages.error(request, 'Invalid email or password.')
+            return render(request, 'signin.html')
     return render(request,'signin.html')
 
-def index1(request):
-    return render(request,'index1.html')
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('signin_page')
+
+def home_page(request):
+    return render(request,'home_page.html')
 
 def dashboard(request):
     return render(request,'dashboard.html')
@@ -32,7 +53,7 @@ def sample(request):
 def tables(request):
     return render(request,'tables-basic.html')
 
-
+@login_required
 def user_view(request):
     context = {}
     user_list = UserModel.objects.filter().exclude(is_superuser=True).order_by('-id')
@@ -45,12 +66,15 @@ def user_view(request):
     context['user_filter'] = user_filter
     return render(request,'user/user.html',context)
 
+@login_required
 def add_user(request):
     context = {}
     if request.method == 'POST':
         form=UserForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)  # Don't save to the database yet
+            user.password = make_password(form.cleaned_data['password'])  # Hash the password
+            user.save() 
             messages.success(request,'User added succesfully')
             return redirect('user_view')
         else:
@@ -63,7 +87,7 @@ def add_user(request):
         context['form'] = UserForm()
         return render(request,'user/create.html',context)
     
-    
+@login_required
 def edit_user(request,pk):
     context = {}
     user = UserModel.objects.get(id=pk)
@@ -87,7 +111,7 @@ def edit_user(request,pk):
     return render(request,'user/edit.html',context)
 
 
-
+@login_required
 def delete_user(request,pk):
     try:
         user = UserModel.objects.get(id=pk)
@@ -104,7 +128,7 @@ def delete_user(request,pk):
     return redirect('user_view')
 
 
-
+@login_required
 def main_task_view(request):
     context = {}
     main_tasks = MainTask.objects.all().order_by('-id')
@@ -117,7 +141,7 @@ def main_task_view(request):
     context['main_task_filter'] = main_task_filter
     return render(request,'task/main_task/view.html',context)
 
-
+@login_required
 def add_main_task(request):
     context = {}
     if request.method == 'POST':
@@ -137,7 +161,7 @@ def add_main_task(request):
         context['form'] = form
         return render(request,'task/main_task/create.html',context)   
 
-
+@login_required
 def edit_main_task(request,pk):
     context = {}
     main_task = MainTask.objects.get(id=pk)     
@@ -161,7 +185,7 @@ def edit_main_task(request,pk):
     return render(request,'task/main_task/edit.html',context)
 
 
-
+@login_required
 def delete_main_task(request,pk):
     try:
         task = MainTask.objects.get(id=pk)
@@ -178,7 +202,7 @@ def delete_main_task(request,pk):
     
             
             
-
+@login_required
 def view_task(request):
     context = {}
     sub_tasks = Task.objects.all().order_by('-id')
@@ -192,13 +216,18 @@ def view_task(request):
     return render(request,'task/sub_task/view.html',context)
 
 
-
+@login_required
 def add_sub_task(request):
     context = {}
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            try:
+                message = f'{request.user.username} added task {instance.main_task.name} to you .'
+                Notification.objects.create(recieve_user=instance.user,send_user=request.user,description=message)
+            except Exception as e:
+                print("wewewewe",e)
             messages.success(request,"Sub task added successfully")
             return redirect('view_task')
         else:
@@ -210,7 +239,7 @@ def add_sub_task(request):
     context['form'] = TaskForm()
     return render(request,'task/sub_task/create.html',context)
             
-            
+@login_required         
 def edit_sub_task(request,pk):
     context = {}
     sub_task = Task.objects.get(id=pk)
@@ -233,7 +262,7 @@ def edit_sub_task(request,pk):
     context['form'] = form
     return render(request,'task/sub_task/edit.html',context)
 
-
+@login_required
 def sub_task_delete(request,pk):
     try:
         sub_task = Task.objects.get(id=pk)

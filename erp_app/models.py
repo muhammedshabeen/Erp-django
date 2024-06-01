@@ -74,7 +74,7 @@ class UserModel(AbstractUser):
     objects = CustomUserManager()
     
     def __str__(self):
-        return self.username
+        return self.username if self.username else self.email
     
 class MainTask(BaseContent):
     name = models.CharField(max_length=100)
@@ -103,3 +103,14 @@ class Task(BaseContent):
     
     def __str__(self):
         return self.description
+    
+class Notification(models.Model):
+    recieve_user = models.ForeignKey(UserModel,on_delete=models.CASCADE,related_name="recieve_user")
+    send_user = models.ForeignKey(UserModel,on_delete=models.CASCADE,related_name="send_user")
+    description = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    message_seen = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.description
+    

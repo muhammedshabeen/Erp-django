@@ -144,7 +144,7 @@
                 
                 
                 <li class="menu-item active">
-                  <a href="index.html" class="menu-link">
+                  <a href="{% url 'home_page' %}" class="menu-link">
                     <div data-i18n="Analytics">Analytics</div>
                   </a>
                 </li>
@@ -602,7 +602,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="javascript:void(0);">
+                      <a class="dropdown-item" href="{% url 'logout_view' %}">
                         <i class="bx bx-power-off me-2"></i>
                         <span class="align-middle">Log Out</span>
                       </a>
