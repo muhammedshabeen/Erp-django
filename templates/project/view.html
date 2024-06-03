@@ -1,6 +1,6 @@
 {% extends 'index1.html' %}
 {% load custom_filters %}
-{% block title %}Task{% endblock %}
+{% block title %}Project{% endblock %}
 
 {% block content %}
 <div class="content-wrapper">
@@ -10,30 +10,26 @@
             <div class="container mt-1">
               <form method="get" class="row g-3">
                   <div class="col-md-3">
-                      {{ main_task_filter.form.name }}
-                  </div>
-                  <div class="col-md-3">
-                      {{ main_task_filter.form.project_name }}
+                      {{ project_filter.form.name }}
                   </div>
                   <div class="col-md-2">
-                      {{ main_task_filter.form.status }}
+                      {{ project_filter.form.status }}
                   </div>
-                  <a href="{% url 'main_task_view' %}" class="btn btn-icon btn-secondary"><span class="tf-icons bx bx-reset"></span></a>
+                  <a href="{% url 'project' %}" class="btn btn-icon btn-secondary"><span class="tf-icons bx bx-reset"></span></a>
                   <div class="col-md-1 ">
                       <button type="submit" class="btn btn-primary ">Filter</button>
                   </div>
               </form>
             </div>
             
-            <a href="{% url 'add_main_task' %}" class="btn btn-primary btn-md" style="width: fit-content;
-            margin-left: auto;margin-right:9px">Add Task</a>
+            <a href="{% url 'add_project' %}" class="btn btn-primary btn-md" style="width: fit-content;
+            margin-left: auto;margin-right:9px">Add Project</a>
             <div class="table-responsive text-nowrap">
                 <table class="table">
                     <thead>
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Project</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -44,7 +40,6 @@
                     <tr>
                         <td>{{forloop.counter}}</td>
                         <td>{{i.name}}</td>
-                        <td>{{i.project_name}}</td>
                         <td><span class="badge
                             {% if i.status == 'Active' %}
                                 bg-label-success 
@@ -58,10 +53,10 @@
                             <i class="bx bx-dots-vertical-rounded"></i>
                             </button>
                             <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{% url 'edit_main_task' i.id %}?page={{ request.GET.page|default:'1' }}&name={{ request.GET.name }}&project_name={{ request.GET.project_name }}&status={{ request.GET.status }}"
+                            <a class="dropdown-item" href="{% url 'edit_project' i.id %}?page={{ request.GET.page|default:'1' }}&name={{ request.GET.name }}&status={{ request.GET.status }}"
                                 ><i class="bx bx-edit-alt me-1"></i> Edit</a
                             >
-                            <a class="dropdown-item" href="{% url 'delete_main_task' i.id %}?page={{ request.GET.page|default:'1' }}&name={{ request.GET.name }}&project_name={{ request.GET.project_name }}&status={{ request.GET.status }}"
+                            <a class="dropdown-item" href="{% url 'delete_project' i.id %}?page={{ request.GET.page|default:'1' }}&name={{ request.GET.name }}&status={{ request.GET.status }}"
                                 ><i class="bx bx-trash me-1"></i> Delete</a
                             >
                             </div>

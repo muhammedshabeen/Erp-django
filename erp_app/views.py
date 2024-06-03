@@ -207,6 +207,79 @@ def delete_user(request,pk):
     return redirect('user_view')
 
 
+
+@login_required
+def project(request):
+    context = {}
+    projects = Project.objects.all().order_by('-id')
+    project_filter = ProjectFilter(request.GET, queryset=projects)
+    paginator = Paginator(project_filter.qs, 7)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
+    context['project_filter'] = project_filter
+    return render(request,'project/view.html',context)
+
+def add_project(request):
+    context = {}
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Project added successfully")
+            return redirect('project')
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+            context['form'] = ProjectForm(request.POST)
+            return render(request,'project/create.html',context)
+    else:
+        context['form'] = ProjectForm()
+        return render(request,'project/create.html',context)
+    
+    
+def edit_project(request,pk):
+    context = {}
+    project = Project.objects.get(id=pk)
+    form = ProjectForm(instance = project)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST,instance = project)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Project edited succesfully")
+            params = request.GET.copy()
+            redirect_url = reverse('project')
+            if params:
+                redirect_url += '?' + params.urlencode()
+                return redirect(redirect_url)
+            return redirect(redirect_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    context['form'] = form
+    return render(request,'project/edit.html',context)
+
+
+
+def delete_project(request,pk):
+    try:
+        project = Project.objects.get(id=pk)
+        project.delete()
+    except Project.DoesNotExist:
+        messages.error(request,"Project doesnot exist")
+    params = request.GET.copy()
+    redirect_url = reverse('project')
+    if params:
+        redirect_url += '?' + params.urlencode()
+        return redirect(redirect_url)
+    return redirect(redirect_url)   
+        
+
+
+
 @login_required
 def main_task_view(request):
     context = {}
@@ -236,7 +309,7 @@ def add_main_task(request):
             context['form'] = MainTaskForm(request.POST)
             return render(request,'task/main_task/create.html',context)
     else:
-        form = MainTaskForm()
+        form = MainTaskForm(request.POST)
         context['form'] = form
         return render(request,'task/main_task/create.html',context)   
 

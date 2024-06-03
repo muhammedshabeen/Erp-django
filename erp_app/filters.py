@@ -28,7 +28,7 @@ class UserFilter(django_filters.FilterSet):
             self.filters[name].field.widget.attrs.update({'class':'form-control','style':'height:41px; padding:0px; padding-left:7px'})
             
             
-class MainTaskFilter(django_filters.FilterSet):
+class ProjectFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(field_name='name', 
                                          lookup_expr='icontains',
                                          widget=forms.TextInput(attrs={'placeholder': 'Enter Title'}))
@@ -38,8 +38,33 @@ class MainTaskFilter(django_filters.FilterSet):
     ))
 
     class Meta:
-        model = MainTask
+        model = Project
         fields = ['name', 'status']
+
+    def __init__(self,*args,**kwargs):
+        super(ProjectFilter,self).__init__(*args,**kwargs)
+        for name in self.filters.keys():
+            self.filters[name].field.widget.attrs.update({'class':'form-control','style':'height:41px; padding:0px; padding-left:7px'})
+            
+            
+class MainTaskFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', 
+                                         lookup_expr='icontains',
+                                         widget=forms.TextInput(attrs={'placeholder': 'Enter Title'}))
+    project_name = django_filters.ModelChoiceFilter(
+        queryset=Project.objects.all().exclude(status='Inactive'),
+        field_name='name',
+        label='Project',
+        widget=forms.Select(attrs={'class': 'form-control'})  # Ensures dropdown styling
+    )
+    status = django_filters.ChoiceFilter(choices=(
+        ('Active', 'Active'),
+        ('Inactive', 'Inactive'),
+    ))
+
+    class Meta:
+        model = MainTask
+        fields = ['name', 'status', 'project_name']
 
     def __init__(self,*args,**kwargs):
         super(MainTaskFilter,self).__init__(*args,**kwargs)

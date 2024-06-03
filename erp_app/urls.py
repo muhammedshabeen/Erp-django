@@ -26,6 +26,13 @@ urlpatterns = [
     path('delete-user/<int:pk>',delete_user,name='delete_user'),
     
     
+    #Project
+    path('view-project',project,name='project'),
+    path('create-project',add_project,name='add_project'),
+    path('edit-project/<int:pk>',edit_project,name='edit_project'),
+    path('delete-project/<int:pk>',delete_project,name='delete_project'),
+    
+    
     #MainTask
     path('main-task',main_task_view,name='main_task_view'),
     path('add-task',add_main_task,name='add_main_task'),

@@ -21,13 +21,30 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-password-toggle">
+                                    <label class="form-label" for="basic-default-password12">Project</label>
+                                    <div class="input-group">
+                                        {{ form.project_name }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="basic-default-password12">Status</label>
+                                <div class="input-group">
+                                    {{ form.status }}
+                                </div>
+                            </div>
+                            {% comment %} <div class="col-md-6">
+                                <div class="form-password-toggle">
                                     <label class="form-label" for="basic-default-password12">Status</label>
                                     <div class="input-group">
                                         {{ form.status }}
                                         </span>
                                     </div>
                                 </div>
-                            </div>
+                            </div> {% endcomment %}
                         </div>
                         
                         

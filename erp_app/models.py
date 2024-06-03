@@ -78,7 +78,14 @@ class UserModel(AbstractUser):
     def __str__(self):
         return self.username if self.username else self.email
     
+class Project(BaseContent):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+    
 class MainTask(BaseContent):
+    project_name = models.ForeignKey(Project,on_delete=models.CASCADE,related_name='project_name',limit_choices_to={'status':"Active"})
     name = models.CharField(max_length=100)
     
     def __str__(self):
@@ -87,7 +94,7 @@ class MainTask(BaseContent):
     
 
 class Task(BaseContent):
-    main_task = models.ForeignKey(MainTask,on_delete=models.CASCADE)
+    main_task = models.ForeignKey(MainTask,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
     description = models.TextField()
     user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
     task_status = models.CharField(default='Assigned',max_length=20,choices=(

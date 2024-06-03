@@ -1,9 +1,9 @@
 {% extends 'index1.html' %}
-{% block title %}Edit Task{% endblock %}
+{% block title %}Add Project{% endblock %}
 {% block content %}
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
-      <h4 class="py-3 mb-4"><span class="text-muted fw-light">Task /</span> Edit User</h4>
+      <h4 class="py-3 mb-4"><span class="text-muted fw-light">Task /</span> Add Project</h4>
 
         <div class="row">
             <div class="col-md-12">
@@ -20,33 +20,15 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-password-toggle">
-                                    <label class="form-label" for="basic-default-password12">Project</label>
-                                    <div class="input-group">
-                                        {{ form.project_name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
                                 <label class="form-label" for="basic-default-password12">Status</label>
                                 <div class="input-group">
                                     {{ form.status }}
                                 </div>
                             </div>
-                            {% comment %} <div class="col-md-6">
-                                <div class="form-password-toggle">
-                                    <label class="form-label" for="basic-default-password12">Project</label>
-                                    <div class="input-group">
-                                        {{ form.project_name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div> {% endcomment %}
+                            
                         </div>
-                        <input type='submit' class="btn btn-primary" value='Submit'>
+                        <input type='submit' class="btn btn-primary " value='Submit'>
+                        <a href="{% url 'project' %}" class="btn btn-secondary ">Go Back</a>
                     </form>
                 </div>
                 </div>

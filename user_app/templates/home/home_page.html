@@ -7,18 +7,54 @@
             <div class="card-body">
                 <h5 class="card-title">Have a great day!!</h5>
                 <p class="card-text"></p>
-                <a href="#" class="btn btn-success">Puch In</a>
+                
+                {% if user_punchin %}
+                    <a href="" class="btn btn-danger">Punch Out</a><br><br>
+                    <a href="" class="btn btn-success">Lunch Start</a>
+                {% else %}        
+                    <a href="{% url 'punch_in' %}" class="btn btn-success">Punch In</a>
+                {% endif %}
             </div>
         </div>
         <div class="card text-center mb-3" style="width:32%" >
             <div class="card-body">
-                <h5 class="card-title"><b>Today</b></h5>
+                <h5 class="card-title"><b>TODAY</b></h5>
                 <div class="table-responsive text-nowrap">
                     <table class="table table-bordered">
                       <thead>
                         <tr>
                           <th><b>Punch In</b></th>
                           <th><b>Punch Out</b></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            {% if user_punchin %}
+                            <td>
+                                <span class="fw-medium">{{user_punchin.punch_in_time}}</span>
+                            </td>
+                            <td>{{user_punchin.punch_out_time|default:""}}</td>
+                            {% else %}
+                            <td>
+                                <span class="fw-medium"></span>
+                            </td>
+                            <td></td>
+                            {% endif %}
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card text-center mb-3" style="width:32%" >
+            <div class="card-body">
+                <h5 class="card-title"><b>LUNCH TIME</b></h5>
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th><b>Lunch Start</b></th>
+                          <th><b>Lunch End</b></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -31,13 +67,6 @@
                       </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-        <div class="card text-center mb-3" style="width:32%" >
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-success">Puch In</a>
             </div>
         </div>
 
@@ -53,7 +82,7 @@
         <div class="card-body">
             <h5 class="card-title">Special title treatment</h5>
             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-success">Puch In</a>
+            <a href="{% url 'punch_in' %}" class="btn btn-success">Puch Insssss</a>
         </div>
     </div>
 </div>
