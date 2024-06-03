@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     #app
     'erp_app',
+    'user_app',
     
     'django_filters',
 ]
