@@ -10,7 +10,16 @@ urlpatterns = [
     path('logout-view-user',logout_view_user,name='logout_view_user'),
     
     #PunchIn
-    path('punch_in',punch_in,name="punch_in"),
+    path('punch-in',punch_in,name="punch_in"),
+    path('lunch-in',lunch_in,name="lunch_in"),
+    path('lunch-end',lunch_end,name="lunch_end"),
+    path('punch-out',punch_out,name="punch_out"),
+    path('punch-out-before',punch_out_before,name="punch_out_before"),
+    
+    
+    #PlannedTask
+    path('planned-task',view_create_planned_task,name='view_create_planned_task')
+    
     
     
     

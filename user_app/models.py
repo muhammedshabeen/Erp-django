@@ -30,11 +30,12 @@ class Attendance(models.Model):
         return timedelta(0)
     
 
-class TodayTask(BaseContent):
-    date = models.DateField()
-    project_name = models.ForeignKey(Project,on_delete=models.CASCADE,related_name='today_project',limit_choices_to={'status':True})
-    main_task = models.ForeignKey(MainTask,on_delete=models.CASCADE,limit_choices_to={'status':True})
-    sub_task = models.ForeignKey(Task,on_delete=models.CASCADE,limit_choices_to={'status':True})
-    time = models.TimeField()
+class PlannedTask(BaseContent):
+    user = models.ForeignKey(UserModel,on_delete=models.CASCADE,related_name='user',null=True)
+    date = models.DateField(null=True)
+    project_name = models.ForeignKey(Project,on_delete=models.CASCADE,related_name='today_project',limit_choices_to={'status':"Active"})
+    main_task = models.ForeignKey(MainTask,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
+    sub_task = models.ForeignKey(Task,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
+    time = models.TimeField(null=True)
     description = models.TextField()
     
