@@ -23,20 +23,26 @@ def signup_page(request):
     return render(request,'signup.html')
 
 def signin_page(request):
+    next_url = request.GET.get('next')
+    print("next_urlnext_url", next_url)
+    
     if request.method == 'POST':
-        
         email = request.POST.get('email')
         password = request.POST.get('password')
-        print("POST METHOD",email,password)
         user = authenticate(request, username=email, password=password)
-        print("USER IS",user)
-        if user is not None:
-            login(request, user)
-            return redirect('home_page')  # Redirect to the home page or another page
+        
+        if user is not None and user.status == 'Active':
+            if user.user_type in ['GM', 'HR']:
+                login(request, user)
+                return redirect(next_url if next_url else 'home_page')
+            elif user.user_type == 'Employer':
+                login(request, user)
+                return redirect(next_url if next_url else 'user_home_page')
         else:
             messages.error(request, 'Invalid email or password.')
             return render(request, 'signin.html')
-    return render(request,'signin.html')
+    
+    return render(request, 'signin.html')
 
 @login_required
 def logout_view(request):
@@ -50,10 +56,11 @@ def forgot_password(request):
         email = request.POST['email']
         try:
             admin_instance = UserModel.objects.get(email=email)
-            # print("////////////////////",admin_instance)
         except UserModel.DoesNotExist:
+            print("YYYYYY")
             messages.error(request,'Check the email')
             return redirect(request.META.get('HTTP_REFERER'))  
+        print("KKKKKK")
         if admin_instance:
             admin_instance.otp = None
             admin_instance.save()
@@ -67,7 +74,7 @@ def forgot_password(request):
                 admin_instance.otp = OTP
                 admin_instance.save()
                 html_message = render_to_string('forgotpassword.html', {'otp': OTP,'image_url':"base_domain_name",'mail':admin_instance.email})
-                subject = 'Doob - Forgotten your password '
+                subject = 'ABC - Forgotten your password '
                 sender_email = settings.EMAIL_HOST_USER
                 recipient_emails = admin_instance.email
 
@@ -80,7 +87,6 @@ def forgot_password(request):
                 email_message.attach_alternative(html_message, 'text/html')
                 email_message.send(fail_silently=False)
                 return redirect('redirect_url',email=email)
-        
     return render(request,'registration/forgot_passwordotp.html')
 
 def redirect_url(request,email):

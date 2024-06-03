@@ -138,6 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'erp_app.UserModel'
 LOGIN_URL = 'signin_page'
+USER_LOGIN_URL = 'user_signin_page'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
