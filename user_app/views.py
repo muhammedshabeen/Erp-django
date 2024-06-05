@@ -108,7 +108,8 @@ def lunch_in(request):
                 lunch_in.save()
                 messages.success(request, "Lunch start success")
             else:
-                messages.error(request, "Please add the planned task")     
+                messages.error(request, "Please add the planned task") 
+                return redirect('view_create_planned_task')    
         else:
             messages.error(request, "An error occured")
     except Attendance.DoesNotExist:
@@ -166,6 +167,7 @@ def punch_out_before(request):
         messages.success(request, "Lunch start success")
     else:
         messages.error(request, "Please add the planned task") 
+        return redirect('view_create_planned_task')
     return redirect('user_home_page')
 
 
