@@ -110,4 +110,44 @@
           </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $("#id_project_name").change(function () {
+        var url = "{% url 'load_main_tasks' %}";  // URL to fetch main tasks
+        var projectId = $(this).val();  // get the selected project ID from the HTML input
+
+        $.ajax({
+            url: url,
+            data: {
+                'project_id': projectId
+            },
+            success: function (data) {
+                $("#id_main_task").html("");  // clear the existing options in the main task dropdown
+                $("#id_main_task").append('<option value="">---------</option>');  // add an empty option
+                $.each(data, function (key, value) {
+                    $("#id_main_task").append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+
+    $("#id_main_task").change(function () {
+        var url = "{% url 'load_sub_tasks' %}";  // URL to fetch sub tasks
+        var mainTaskId = $(this).val();  // get the selected main task ID from the HTML input
+
+        $.ajax({
+            url: url,
+            data: {
+                'main_task_id': mainTaskId
+            },
+            success: function (data) {
+                $("#id_sub_task").html("");  // clear the existing options in the sub task dropdown
+                $("#id_sub_task").append('<option value="">---------</option>');  // add an empty option
+                $.each(data, function (key, value) {
+                    $("#id_sub_task").append('<option value="' + value.id + '">' + value.description + '</option>');
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

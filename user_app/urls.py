@@ -29,4 +29,9 @@ urlpatterns = [
     path('edit-notes-user/<int:pk>',user_edit_note,name='user_edit_note'),
     path('delete-notes-user/<int:pk>',user_delete_note,name='user_delete_note'),
     
+    
+    #AjaxPath
+    path('ajax/load-main-tasks/', load_main_tasks, name='load_main_tasks'),
+    path('ajax/load-sub-tasks/', load_sub_tasks, name='load_sub_tasks'),
+    
 ]

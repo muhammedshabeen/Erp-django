@@ -312,3 +312,14 @@ def user_delete_note(request,pk):
         redirect_url += '?' + params.urlencode()
         return redirect(redirect_url)
     return redirect(redirect_url)
+
+
+def load_main_tasks(request):
+    project_id = request.GET.get('project_id')
+    main_tasks = MainTask.objects.filter(project_name_id=project_id, status='Active').order_by('-id')
+    return JsonResponse(list(main_tasks.values('id', 'name')), safe=False)
+
+def load_sub_tasks(request):
+    main_task_id = request.GET.get('main_task_id')
+    sub_tasks = Task.objects.filter(main_task_id=main_task_id, status='Active').order_by('-id')
+    return JsonResponse(list(sub_tasks.values('id', 'description')), safe=False)
