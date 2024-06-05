@@ -45,4 +45,11 @@ urlpatterns = [
     path('create-sub-task',add_sub_task,name='add_sub_task'),
     path('edit-sub-task/<int:pk>',edit_sub_task,name='edit_sub_task'),
     path('delete-sub-task/<int:pk>',sub_task_delete,name='sub_task_delete'),
+    
+    
+    #notes
+    path('view-notes',notes,name='notes'),
+    path('create-notes',create_note,name='create_note'),
+    path('edit-notes/<int:pk>',edit_note,name='edit_note'),
+    path('delete-notes/<int:pk>',delete_note,name='delete_note'),
 ]

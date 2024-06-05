@@ -17,7 +17,9 @@ from core import settings
 from .decorator import *
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta,timezone
-
+from erp_app.models import Notes
+from erp_app.forms import NoteForm
+from erp_app.filters import NoteFilter
 
 
 
@@ -196,3 +198,82 @@ def view_create_planned_task(request):
     tasks = PlannedTask.objects.filter(date=today_date,user=request.user)
     context['tasks'] = tasks if tasks else None
     return render(request,'planned_task/view_add_planned_task.html',context)
+
+
+
+
+
+           
+@custom_login_required
+def user_notes(request):
+    context = {}
+    notes = Notes.objects.filter(user=request.user).order_by('-id')
+    note_filter = NoteFilter(request.GET, queryset=notes)
+    paginator = Paginator(note_filter.qs, 7)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
+    context['note_filter'] = note_filter
+    return render(request,'home/notes/view.html',context)
+
+@custom_login_required
+def user_create_note(request):
+    context = {}
+    form = NoteForm()
+    if request.method == 'POST':
+        form = NoteForm(request.POST,request.FILES)
+        print("lll",request.POST,request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            messages.success(request,"Notes added successfully")
+            return redirect('user_notes')
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+            form = NoteForm(request.POST)
+            context['form'] = form
+            return render(request,'home/notes/create.html',context)
+    context['form'] = form
+    return render(request,'home/notes/create.html',context)
+
+@custom_login_required
+def user_edit_note(request,pk):
+    context = {}
+    note = Notes.objects.get(id=pk)
+    form = NoteForm(instance = note)
+    if request.method == 'POST':
+        form = NoteForm(request.POST,request.FILES,instance=note)
+        if form.is_valid():
+            print("form",request.POST,request.FILES)
+            form.save()
+            messages.success(request,"Note edited succesfully")
+            params = request.GET.copy()
+            redirect_url = reverse('user_notes')
+            if params:
+                redirect_url += '?' + params.urlencode()
+                return redirect(redirect_url)
+            return redirect(redirect_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    context['form'] = form
+    return render(request,'home/notes/edit.html',context)
+
+@custom_login_required
+def user_delete_note(request,pk):
+    params = request.GET.copy()
+    redirect_url = reverse('user_notes')
+    try:
+        note = Notes.objects.get(id=pk)
+        note.delete()
+    except Notes.DoesNotExist:
+        messages.error(request,"Note Found")
+    if params:
+        redirect_url += '?' + params.urlencode()
+        return redirect(redirect_url)
+    return redirect(redirect_url)

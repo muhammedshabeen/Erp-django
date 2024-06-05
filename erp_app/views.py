@@ -12,6 +12,7 @@ from django.contrib.auth.hashers import make_password
 import random,math
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from .decrorator import restrict_access
 
 
 
@@ -44,7 +45,10 @@ def signin_page(request):
     
     return render(request, 'signin.html')
 
+
+
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def logout_view(request):
     logout(request)
     return redirect('signin_page')
@@ -120,6 +124,7 @@ def otp_validate(request):
     return render(request,'registration/forgot_passwordotp.html')
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def home_page(request):
     return render(request,'home_page.html')
 
@@ -133,6 +138,7 @@ def tables(request):
     return render(request,'tables-basic.html')
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def user_view(request):
     context = {}
     user_list = UserModel.objects.filter().exclude(is_superuser=True).order_by('-id')
@@ -146,6 +152,7 @@ def user_view(request):
     return render(request,'user/user.html',context)
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def add_user(request):
     context = {}
     if request.method == 'POST':
@@ -167,6 +174,7 @@ def add_user(request):
         return render(request,'user/create.html',context)
     
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def edit_user(request,pk):
     context = {}
     user = UserModel.objects.get(id=pk)
@@ -191,6 +199,7 @@ def edit_user(request,pk):
 
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def delete_user(request,pk):
     try:
         user = UserModel.objects.get(id=pk)
@@ -209,6 +218,7 @@ def delete_user(request,pk):
 
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def project(request):
     context = {}
     projects = Project.objects.all().order_by('-id')
@@ -221,6 +231,8 @@ def project(request):
     context['project_filter'] = project_filter
     return render(request,'project/view.html',context)
 
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
 def add_project(request):
     context = {}
     if request.method == 'POST':
@@ -239,7 +251,8 @@ def add_project(request):
         context['form'] = ProjectForm()
         return render(request,'project/create.html',context)
     
-    
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
 def edit_project(request,pk):
     context = {}
     project = Project.objects.get(id=pk)
@@ -263,7 +276,8 @@ def edit_project(request,pk):
     return render(request,'project/edit.html',context)
 
 
-
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
 def delete_project(request,pk):
     try:
         project = Project.objects.get(id=pk)
@@ -281,6 +295,7 @@ def delete_project(request,pk):
 
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def main_task_view(request):
     context = {}
     main_tasks = MainTask.objects.all().order_by('-id')
@@ -294,6 +309,7 @@ def main_task_view(request):
     return render(request,'task/main_task/view.html',context)
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def add_main_task(request):
     context = {}
     if request.method == 'POST':
@@ -314,6 +330,7 @@ def add_main_task(request):
         return render(request,'task/main_task/create.html',context)   
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def edit_main_task(request,pk):
     context = {}
     main_task = MainTask.objects.get(id=pk)     
@@ -338,6 +355,7 @@ def edit_main_task(request,pk):
 
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def delete_main_task(request,pk):
     try:
         task = MainTask.objects.get(id=pk)
@@ -355,6 +373,7 @@ def delete_main_task(request,pk):
             
             
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def view_task(request):
     context = {}
     sub_tasks = Task.objects.all().order_by('-id')
@@ -369,6 +388,7 @@ def view_task(request):
 
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def add_sub_task(request):
     context = {}
     if request.method == 'POST':
@@ -391,7 +411,8 @@ def add_sub_task(request):
     context['form'] = TaskForm()
     return render(request,'task/sub_task/create.html',context)
             
-@login_required         
+@login_required   
+@restrict_access(user_types=['HR', 'GM'])      
 def edit_sub_task(request,pk):
     context = {}
     sub_task = Task.objects.get(id=pk)
@@ -415,6 +436,7 @@ def edit_sub_task(request,pk):
     return render(request,'task/sub_task/edit.html',context)
 
 @login_required
+@restrict_access(user_types=['HR', 'GM'])
 def sub_task_delete(request,pk):
     try:
         sub_task = Task.objects.get(id=pk)
@@ -429,4 +451,81 @@ def sub_task_delete(request,pk):
         return redirect(redirect_url)
     return redirect(redirect_url)
     
-            
+           
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def notes(request):
+    context = {}
+    notes = Notes.objects.filter(user=request.user).order_by('-id')
+    note_filter = NoteFilter(request.GET, queryset=notes)
+    paginator = Paginator(note_filter.qs, 7)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
+    context['note_filter'] = note_filter
+    return render(request,'notes/view.html',context)
+
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def create_note(request):
+    context = {}
+    form = NoteForm()
+    if request.method == 'POST':
+        form = NoteForm(request.POST,request.FILES)
+        print("lll",request.POST,request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            messages.success(request,"Notes added successfully")
+            return redirect('notes')
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+            form = NoteForm(request.POST)
+            context['form'] = form
+            return render(request,'notes/create.html',context)
+    context['form'] = form
+    return render(request,'notes/create.html',context)
+
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def edit_note(request,pk):
+    context = {}
+    note = Notes.objects.get(id=pk)
+    form = NoteForm(instance = note)
+    if request.method == 'POST':
+        form = NoteForm(request.POST,request.FILES,instance=note)
+        if form.is_valid():
+            print("form",request.POST,request.FILES)
+            form.save()
+            messages.success(request,"Note edited succesfully")
+            params = request.GET.copy()
+            redirect_url = reverse('notes')
+            if params:
+                redirect_url += '?' + params.urlencode()
+                return redirect(redirect_url)
+            return redirect(redirect_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    context['form'] = form
+    return render(request,'notes/edit.html',context)
+
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def delete_note(request,pk):
+    params = request.GET.copy()
+    redirect_url = reverse('notes')
+    try:
+        note = Notes.objects.get(id=pk)
+        note.delete()
+    except Notes.DoesNotExist:
+        messages.error(request,"Note Found")
+    if params:
+        redirect_url += '?' + params.urlencode()
+        return redirect(redirect_url)
+    return redirect(redirect_url)

@@ -109,3 +109,21 @@ class TaskFilter(django_filters.FilterSet):
         super(TaskFilter,self).__init__(*args,**kwargs)
         for name in self.filters.keys():
             self.filters[name].field.widget.attrs.update({'class':'form-control','style':'height:41px; padding:0px; padding-left:7px'})
+            
+            
+class NoteFilter(django_filters.FilterSet):
+    content = django_filters.CharFilter(field_name='content', 
+                                         lookup_expr='icontains',
+                                         widget=forms.TextInput(attrs={'placeholder': 'Enter Content'}))
+    
+    class Meta:
+        model = Notes
+        fields = ['content']
+    
+    
+    def __init__(self, *args, **kwargs):
+        super(NoteFilter, self).__init__(*args, **kwargs)
+        for name in self.filters.keys():
+            self.filters[name].field.widget.attrs.update({'class':'form-control','style':'height:41px; padding:0px; padding-left:7px'})
+        
+    

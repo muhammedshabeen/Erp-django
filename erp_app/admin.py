@@ -35,4 +35,5 @@ admin.site.register(MainTask)
 admin.site.register(Task)
 admin.site.register(Notification)
 admin.site.register(Project)
+admin.site.register(Notes)
 

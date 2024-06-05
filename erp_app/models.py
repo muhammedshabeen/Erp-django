@@ -123,3 +123,9 @@ class Notification(models.Model):
     def __str__(self):
         return self.description
     
+    
+class Notes(BaseContent):
+    user = models.ForeignKey(UserModel,on_delete=models.CASCADE,related_name='note_user',null=True)
+    content = models.TextField()
+    file = models.FileField(upload_to='notes')
+    
