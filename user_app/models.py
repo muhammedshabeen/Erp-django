@@ -36,6 +36,6 @@ class PlannedTask(BaseContent):
     project_name = models.ForeignKey(Project,on_delete=models.CASCADE,related_name='today_project',limit_choices_to={'status':"Active"})
     main_task = models.ForeignKey(MainTask,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
     sub_task = models.ForeignKey(Task,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
-    time = models.TimeField(null=True)
+    time = models.CharField(max_length=80,null=True)
     description = models.TextField()
     

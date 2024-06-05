@@ -19,6 +19,8 @@ urlpatterns = [
     
     #PlannedTask
     path('planned-task',view_create_planned_task,name='view_create_planned_task'),
+    path('edit-planned-task/<int:pk>',edit_planned_task,name='edit_planned_task'),
+    path('delete-planned-task/<int:pk>',planned_task_delete,name='planned_task_delete'),
     
     
     #NoteUser

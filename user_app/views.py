@@ -184,7 +184,6 @@ def view_create_planned_task(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.date = today_date
-            instance.time = current_time_str
             instance.user = request.user
             instance.save()
             messages.success(request,'Planned task added successfully')
@@ -198,6 +197,42 @@ def view_create_planned_task(request):
     tasks = PlannedTask.objects.filter(date=today_date,user=request.user)
     context['tasks'] = tasks if tasks else None
     return render(request,'planned_task/view_add_planned_task.html',context)
+
+
+@custom_login_required
+def edit_planned_task(request,pk):
+    context = {}
+    task = PlannedTask.objects.get(id=pk)
+    form = PlannedTaskForm(instance=task)
+    if request.method == 'POST':
+        form = PlannedTaskForm(request.POST,instance=task)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Planned Task edited succesfully")
+            return redirect('view_create_planned_task')
+        else:
+            form = PlannedTaskForm(request.POST)
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    context['form'] = form
+    return render(request,'planned_task/edit_planned_task.html',context)
+
+
+
+
+
+@custom_login_required
+def planned_task_delete(request,pk):
+    try:
+        task = PlannedTask.objects.get(id=pk)
+        task.delete()
+    except PlannedTask.DoesNotExist:
+        messages.error(request,'Planned doesnot exist!!')
+    return redirect('view_create_planned_task')
+    
+
+
 
 
 
