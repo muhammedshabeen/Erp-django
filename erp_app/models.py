@@ -131,7 +131,7 @@ class Notes(BaseContent):
     
     
 class UserProfile(BaseContent):
-    user = models.OneToOneField(UserModel,on_delete=models.CASCADE)
+    user = models.OneToOneField(UserModel,on_delete=models.CASCADE,null=True)
     first_name = models.CharField(null=True,blank=True)
     last_name = models.CharField(null=True,blank=True)
     Address = models.TextField(null=True,blank=True)
@@ -149,7 +149,6 @@ class UserProfile(BaseContent):
         ('Male','Male'),
         ('Female','Female'),
     ))
-    working_area = models.CharField(null=True,blank=True)
     
     def __str__(self):
         return self.user.username

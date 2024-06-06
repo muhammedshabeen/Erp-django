@@ -6,7 +6,7 @@ from . models import *
 class UserForm(forms.ModelForm):
     class Meta:
         model = UserModel
-        fields = ['username','email','password','phone','user_type','status']
+        fields = ['username','email','password','phone','user_type','status','image']
         widgets = {
             'password': forms.PasswordInput(attrs={
                 'class': 'form-control',
@@ -18,6 +18,19 @@ class UserForm(forms.ModelForm):
         super(UserForm, self).__init__(*args, **kwargs)
         for name in self.fields.keys():
             self.fields[name].widget.attrs.update({'class':'form-control'})
+            
+            
+class UserProfileForm(forms.ModelForm):
+    
+    class Meta:
+        model = UserProfile
+        exclude = ['user']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({'class':'form-control'})
+    
             
             
 class ProjectForm(forms.ModelForm):

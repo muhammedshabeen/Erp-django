@@ -156,21 +156,33 @@ def user_view(request):
 def add_user(request):
     context = {}
     if request.method == 'POST':
-        form=UserForm(request.POST)
-        if form.is_valid():
+        form=UserForm(request.POST,request.FILES)
+        form1 = UserProfileForm(request.POST)
+        print("qqqqqqqqqqqqq")
+        if form.is_valid() and form1.is_valid():
+            print("enter to the valid")
             user = form.save(commit=False)  # Don't save to the database yet
             user.password = make_password(form.cleaned_data['password'])  # Hash the password
             user.save() 
+            user_profile = form1.save(commit=False)
+            user_profile.user = user
+            user_profile.save()
             messages.success(request,'User added succesfully')
             return redirect('user_view')
         else:
-           for field_name, errors in form.errors.items():
+            print("valid ELSE")
+            for field_name, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, "{}".format(error))
-        context['form'] = UserForm(request.POST)
+                    messages.error(request, "{}: {}".format(field_name, error))
+            for field_name, errors in form1.errors.items():
+                for error in errors:
+                    messages.error(request, "{}: {}".format(field_name, error))
+        context['form'] = UserForm(request.POST,request.FILES)
+        context['form1'] = UserProfileForm(request.POST)
         return render(request,'user/create.html',context)
     else:
         context['form'] = UserForm()
+        context['form1'] = UserProfileForm()
         return render(request,'user/create.html',context)
     
 @login_required
@@ -178,11 +190,15 @@ def add_user(request):
 def edit_user(request,pk):
     context = {}
     user = UserModel.objects.get(id=pk)
+    user_profile = UserProfile.objects.get(user=user)
     form = UserForm(instance=user)
+    form1 = UserProfileForm(instance=user_profile)
     if request.method == 'POST':
-        form = UserForm(request.POST,instance=user)
-        if form.is_valid():
+        form = UserForm(request.POST,request.FILES,instance=user)
+        form1 = UserProfileForm(request.POST,instance=user_profile)
+        if form.is_valid() and form1.is_valid():
             form.save()
+            form1.save()
             params = request.GET.copy()
             redirect_url = reverse('user_view') 
             messages.success(request,"User edited successfully")
@@ -195,6 +211,7 @@ def edit_user(request,pk):
                 for error in errors:
                     messages.error(request, "{}".format(error))
     context['form'] = form
+    context['form1'] = form1
     return render(request,'user/edit.html',context)
 
 
