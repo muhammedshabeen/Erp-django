@@ -129,3 +129,29 @@ class Notes(BaseContent):
     content = models.TextField()
     file = models.FileField(upload_to='notes')
     
+    
+class UserProfile(BaseContent):
+    user = models.OneToOneField(UserModel,on_delete=models.CASCADE)
+    first_name = models.CharField(null=True,blank=True)
+    last_name = models.CharField(null=True,blank=True)
+    Address = models.TextField(null=True,blank=True)
+    country = models.CharField(null=True,blank=True)
+    state = models.CharField(null=True,blank=True)
+    district = models.CharField(null=True,blank=True)
+    company_section = models.CharField(null=True,blank=True)
+    zip_code = models.CharField(null=True,blank=True)
+    language = models.CharField(null=True,blank=True)
+    salary = models.CharField(null=True,blank=True)
+    working_time = models.CharField(null=True,blank=True)
+    dob = models.CharField(null=True,blank=True)
+    working_area = models.CharField(null=True,blank=True)
+    gender = models.CharField(null=True,blank=True,max_length=20,choices=(
+        ('Male','Male'),
+        ('Female','Female'),
+    ))
+    working_area = models.CharField(null=True,blank=True)
+    
+    def __str__(self):
+        return self.user.username
+    
+    

@@ -14,7 +14,7 @@ class CustomUserAdmin(UserAdmin):
     # Define the fields to display in the detail view
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('username', 'user_type', 'phone', 'status','otp')}),
+        ('Personal info', {'fields': ('username', 'user_type', 'phone', 'status','otp','image')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
 
@@ -22,7 +22,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username','phone','user_type', 'status', 'password1', 'password2', 'otp','is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'fields': ('email', 'username','phone','user_type', 'status', 'password1', 'password2', 'otp','is_active', 'image','is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
     )
 
@@ -36,4 +36,5 @@ admin.site.register(Task)
 admin.site.register(Notification)
 admin.site.register(Project)
 admin.site.register(Notes)
+admin.site.register(UserProfile)
 

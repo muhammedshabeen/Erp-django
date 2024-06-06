@@ -52,4 +52,7 @@ urlpatterns = [
     path('create-notes',create_note,name='create_note'),
     path('edit-notes/<int:pk>',edit_note,name='edit_note'),
     path('delete-notes/<int:pk>',delete_note,name='delete_note'),
+    
+    #account-Profile
+    path('account-settings',account_settings,name='account_settings'),
 ]

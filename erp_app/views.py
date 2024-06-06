@@ -529,3 +529,35 @@ def delete_note(request,pk):
         redirect_url += '?' + params.urlencode()
         return redirect(redirect_url)
     return redirect(redirect_url)
+
+
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def account_settings(request):
+    errors = {}
+    context = {}
+    user_profile = UserProfile.objects.get(user_id=request.user.id)
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        if not password:
+            errors['password'] = 'Password is required.'
+            messages.error(request,'Password is required')
+        if not password_confirm:
+            errors['password_confirm'] = 'Password confirmation is required.'
+            messages.error(request,'Password confirmation is required.')
+        if password and password_confirm and password != password_confirm:
+            errors['password_confirm'] = 'Passwords do not match.'
+            messages.error(request,'Passwords do not match')
+        if not errors:
+            try:
+                pass_user = UserModel.objects.get(id=request.user.id) 
+                pass_user.password = make_password(password_confirm)
+                pass_user.save()
+                messages.success(request,'Password changed succesfully!! Please Login')
+                
+            except UserModel.DoesNotExist:
+                messages.error("something went wrong try again later")
+        return redirect('account_settings')  # Replace with your success URL
+    context['user'] = user_profile
+    return render(request,'profile/acount_profile.html',context)
