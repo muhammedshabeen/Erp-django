@@ -34,4 +34,10 @@ urlpatterns = [
     path('ajax/load-main-tasks/', load_main_tasks, name='load_main_tasks'),
     path('ajax/load-sub-tasks/', load_sub_tasks, name='load_sub_tasks'),
     
+    
+    #EmployeProfile
+    path('employee-profile', employee_account_settings, name='employee_account_settings'),
+    
+    
+    
 ]
