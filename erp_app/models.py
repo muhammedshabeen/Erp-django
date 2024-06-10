@@ -154,3 +154,25 @@ class UserProfile(BaseContent):
         return self.user.username
     
     
+class LeaveRequest(BaseContent):
+    user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
+    leave_type = models.CharField(null=True,blank=True,max_length=40,choices=(
+        ('Casual Leave','Casual Leave'),
+        ('Sick Leave','Sick Leave'),
+        ('Previlage Leave','Previlage Leave'),
+        ('Maintanace Leave','Maintanace Leave'),
+        ('Earned Leave','Earned Leave'),
+        ('Maternity Leave','Maternity Leave'),
+        ('Study Leave or Sabbatical','Study Leave or Sabbatical'),
+        ('Quarantine Leave','Quarantine Leave'),
+        ('L O P','L O P'),
+        ('Compensatry Leave','Compensatry Leave'),
+    ))
+    date_from = models.DateField()
+    date_to = models.DateField()
+    no_of_days = models.IntegerField()
+    description = models.TextField()
+    
+    def __str__(self):
+        return f'{self.user.username} - leave from {self.date_from} to {self.date_to}'
+    

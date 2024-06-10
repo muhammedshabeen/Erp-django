@@ -37,4 +37,5 @@ admin.site.register(Notification)
 admin.site.register(Project)
 admin.site.register(Notes)
 admin.site.register(UserProfile)
+admin.site.register(LeaveRequest)
 
