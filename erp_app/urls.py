@@ -55,4 +55,8 @@ urlpatterns = [
     
     #account-Profile
     path('account-settings',account_settings,name='account_settings'),
+    
+    
+    #Leave Requests
+    path('leave-requests',LeaveRequestListView,name='leave_requests')
 ]

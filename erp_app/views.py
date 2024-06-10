@@ -13,6 +13,9 @@ import random,math
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from .decrorator import restrict_access
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View
 
 
 
@@ -578,3 +581,20 @@ def account_settings(request):
         return redirect('account_settings')  # Replace with your success URL
     context['user'] = user_profile
     return render(request,'profile/acount_profile.html',context)
+
+
+
+
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def LeaveRequestListView(request):
+    context = {}
+    leaves = LeaveRequest.objects.all().order_by('-id')
+    leave_filter = LeaveRequestFilter(request.GET, queryset=leaves)
+    paginator = Paginator(leave_filter.qs, 7)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
+    context['leave_filter'] = leave_filter
+    return render(request,'leave_request_user/leaverequest_list.html',context)
