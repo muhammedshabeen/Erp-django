@@ -155,7 +155,7 @@ class UserProfile(BaseContent):
     
     
 class LeaveRequest(BaseContent):
-    user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
+    user = models.ForeignKey(UserModel,on_delete=models.CASCADE,null=True)
     leave_type = models.CharField(null=True,blank=True,max_length=40,choices=(
         ('Casual Leave','Casual Leave'),
         ('Sick Leave','Sick Leave'),

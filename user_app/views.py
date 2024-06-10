@@ -20,6 +20,11 @@ from datetime import datetime, timedelta,timezone
 from erp_app.models import Notes,UserProfile
 from erp_app.forms import NoteForm
 from erp_app.filters import NoteFilter
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views import View
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from .filters import *
 
 
 
@@ -354,3 +359,99 @@ def employee_account_settings(request):
         return redirect('account_settings')  # Replace with your success URL
     context['user'] = user_profile
     return render(request,'home/profile.html',context)
+
+
+
+@method_decorator(custom_login_required, name='dispatch')
+class LeaveRequestView(View):
+    template_list = 'leave_request/leaverequest_list.html'
+    template_edit = 'leave_request/leaverequest_edit.html'
+    template_form = 'leave_request/leaverequest_form.html'
+    template_confirm_delete = 'leave_request/leaverequest_confirm_delete.html'
+    success_url = reverse_lazy('leaverequest_list')
+
+    def get(self, request, pk=None):
+        context = {}
+        if 'new' in request.path:
+            form = LeaveRequestForm()
+            return render(request, self.template_form, {'form': form})
+        leave_requests = LeaveRequest.objects.filter(user=request.user)
+        leave_filter = LeaveFilter(request.GET,queryset=leave_requests)
+        paginator = Paginator(leave_filter.qs,7)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
+        context['leave_filter'] = leave_filter
+        return render(request, self.template_list, context)
+
+    def post(self, request):
+        form = LeaveRequestForm(request.POST)
+        if form.is_valid():
+            leave_request = form.save(commit=False)
+            leave_request.user = request.user
+            leave_request.status = 'Inactive'
+            leave_request.save()
+            messages.success(request,"Leave added succesfully")
+            return redirect(self.success_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+        # form = LeaveRequestForm()
+        return render(request, self.template_form, {'form': form})
+
+    def get_form(self, request, pk=None):
+        if pk:
+            leave_request = get_object_or_404(LeaveRequest, pk=pk)
+            form = LeaveRequestForm(instance=leave_request)
+        else:
+            form = LeaveRequestForm()
+        return render(request, self.template_form, {'form': form})
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in ['get', 'post', 'put', 'delete']:
+            return super().dispatch(request, *args, **kwargs)
+        return self.http_method_not_allowed(request, *args, **kwargs)
+    
+
+
+@custom_login_required    
+def LeaveRequestEdit(request,pk):
+    context = {}
+    leave = LeaveRequest.objects.get(id=pk)
+    form = LeaveRequestForm(instance=leave)
+    if request.method == 'POST':
+        form = LeaveRequestForm(request.POST,instance=leave)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Leave edit successfully")
+            params = request.GET.copy()
+            redirect_url = reverse('leaverequest_list')
+            if params:
+                redirect_url += '?' + params.urlencode()
+                return redirect(redirect_url)
+            return redirect(redirect_url)
+        else:
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, "{}".format(error))
+    else:
+        context['form'] = form
+        return render(request,'leave_request/leaverequest_edit.html',context)
+        
+        
+@custom_login_required
+def delete_leave(request, pk=None):
+    user = request.user
+    try:
+        leave_request = get_object_or_404(LeaveRequest, pk=pk,user=user)
+        leave_request.delete()
+        messages.success(request,'Leave deleted')
+    except LeaveRequest.DoesNotExist:
+        messages.error(request,'Permission denied')
+    success_url = reverse('leaverequest_list')
+    params = request.GET.copy()
+    if params:
+        success_url += '?' + params.urlencode()
+        return redirect(success_url)
+    return redirect(success_url)

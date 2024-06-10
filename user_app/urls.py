@@ -38,6 +38,13 @@ urlpatterns = [
     #EmployeProfile
     path('employee-profile', employee_account_settings, name='employee_account_settings'),
     
+    #LeaveRequest
+    path('view-leave', LeaveRequestView.as_view(), name='leaverequest_list'),
+    path('leave/<int:pk>/', LeaveRequestView.as_view(), name='leaverequest_detail'),
+    path('leave/new/', LeaveRequestView.as_view(), name='leaverequest_new'),
+    path('leave-request/edit/<int:pk>', LeaveRequestEdit, name='leaverequest_edit'),
+    path('leave/<int:pk>/delete/',delete_leave, name='leaverequest_delete'),
+    
     
     
 ]
