@@ -57,23 +57,22 @@
                             {% endif %}
                             me-1">
                             {% if i.status == 'Active' %}
-                                Accept
+                                Approved
                             {% else %}
                                 Pending
                             {% endif %}
-                                </span></td>
-                        <td>
-                        <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{% url 'leaverequest_edit' i.id %}?page={{ request.GET.page|default:'1' }}&leave_type={{ request.GET.leave_type }}&user={{ request.GET.user }}&status={{ request.GET.status }}"
-                                ><i class="bx bx-edit-alt me-1"></i> Edit</a
-                            >
-                            </div>
-                        </div>
+                                </span>
                         </td>
+                        
+                        {%if i.status == 'Inactive' %} 
+                        <td>
+                            <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modalToggle" data-id="{{ i.id }}" >Approve</button>
+                        </td>
+                        {% else %}
+                        <td>
+                        <button type="button" disabled class="btn btn-primary">Approved</button>
+                        </td>
+                        {% endif %}
                         
                     </tr>
                     
@@ -92,7 +91,7 @@
               <ul class="pagination justify-content-center">
                   {% if page_obj.has_previous %}
                       <li class="page-item prev">
-                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for field, value in main_task_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for field, value in leave_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
                               <span aria-hidden="true">&laquo;</span>
                           </a>
                       </li>
@@ -111,14 +110,14 @@
                           </li>
                       {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                           <li class="page-item">
-                              <a class="page-link" href="?page={{ num }}{% for field, value in main_task_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                              <a class="page-link" href="?page={{ num }}{% for field, value in leave_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
                           </li>
                       {% endif %}
                   {% endfor %}
                   
                   {% if page_obj.has_next %}
                       <li class="page-item next">
-                          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for field, value in main_task_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for field, value in leave_filter.form.cleaned_data.items %}{% if value and field != 'page' %}&{{ field }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
                               <span aria-hidden="true">&raquo;</span>
                           </a>
                       </li>
@@ -136,4 +135,42 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modalToggle" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalToggleLabel">Leave Approve</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Are you sure to continue the appove the leave request!!</div>
+                <div class="modal-footer">
+                <a href="#"
+                    id="approveLeaveButton"
+                    class="btn btn-primary">
+                    Approve
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalToggle = document.getElementById('modalToggle');
+        modalToggle.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget;
+            // Extract info from data-id attribute
+            var leaveRequestId = button.getAttribute('data-id');
+            var approveUrl = "{% url 'approve_leave' pk=0 %}".replace('0', leaveRequestId);
+    
+            // Update the modal's content
+            var approveButton = modalToggle.querySelector('#approveLeaveButton');
+            approveButton.setAttribute('href', approveUrl);
+        });
+    });
+</script>
 {% endblock %}

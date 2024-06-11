@@ -58,5 +58,6 @@ urlpatterns = [
     
     
     #Leave Requests
-    path('leave-requests',LeaveRequestListView,name='leave_requests')
+    path('leave-requests',LeaveRequestListView,name='leave_requests'),
+    path('approve-leave/<int:pk>',approve_leave,name='approve_leave'),
 ]

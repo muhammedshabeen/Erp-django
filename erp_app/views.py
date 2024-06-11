@@ -598,3 +598,21 @@ def LeaveRequestListView(request):
     context['page_obj'] = page_obj
     context['leave_filter'] = leave_filter
     return render(request,'leave_request_user/leaverequest_list.html',context)
+
+
+@login_required
+@restrict_access(user_types=['HR', 'GM'])
+def approve_leave(request,pk):
+    try:
+        leave = LeaveRequest.objects.get(id=pk)
+        leave.status = 'Active'
+        leave.save()
+        messages.success(request,'Leave Approved succesfully')
+    except LeaveRequest.DoesNotExist:
+        messages.error(request,'Leave request doesnot exist')
+    params = request.GET.copy()
+    redirect_url = reverse('leave_requests')
+    if params:
+        redirect_url += '?' + params.urlencode()
+        return redirect(redirect_url)
+    return redirect(redirect_url)
