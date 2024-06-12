@@ -39,3 +39,12 @@ class PlannedTask(BaseContent):
     time = models.CharField(max_length=80,null=True)
     description = models.TextField()
     
+class TodayTask(BaseContent):
+    user_today = models.ForeignKey(UserModel,on_delete=models.CASCADE,null=True)
+    date = models.DateField()
+    project_name_today = models.ForeignKey(Project,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
+    main_task_today = models.ForeignKey(MainTask,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
+    sub_task_today = models.ForeignKey(Task,on_delete=models.CASCADE,limit_choices_to={'status':"Active"})
+    time = models.TimeField()
+    description = models.TextField()
+    

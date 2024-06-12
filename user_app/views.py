@@ -150,6 +150,7 @@ def punch_out(request):
     current_time_str = datetime.now().strftime('%H:%M:%S')
     try:
         punch_out = Attendance.objects.get(user=user, date=today_date)
+        today_task = TodayTask.objects.get(user_today=user,date=today_date)
         if punch_out:
             punch_out.punch_out_time = current_time_str
             punch_out.save()
