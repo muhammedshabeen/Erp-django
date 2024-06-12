@@ -420,24 +420,34 @@ def LeaveRequestEdit(request,pk):
     context = {}
     leave = LeaveRequest.objects.get(id=pk)
     form = LeaveRequestForm(instance=leave)
-    if request.method == 'POST':
-        form = LeaveRequestForm(request.POST,instance=leave)
-        if form.is_valid():
-            form.save()
-            messages.success(request,"Leave edit successfully")
-            params = request.GET.copy()
-            redirect_url = reverse('leaverequest_list')
-            if params:
-                redirect_url += '?' + params.urlencode()
+    if leave.status == 'Inactive':
+        if request.method == 'POST':
+            form = LeaveRequestForm(request.POST,instance=leave)
+            if form.is_valid():
+                form.save()
+                messages.success(request,"Leave edit successfully")
+                params = request.GET.copy()
+                redirect_url = reverse('leaverequest_list')
+                if params:
+                    redirect_url += '?' + params.urlencode()
+                    return redirect(redirect_url)
                 return redirect(redirect_url)
-            return redirect(redirect_url)
+            else:
+                for field_name, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, "{}".format(error))
+    
         else:
-            for field_name, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, "{}".format(error))
+            context['form'] = form
+            return render(request,'leave_request/leaverequest_edit.html',context)
     else:
-        context['form'] = form
-        return render(request,'leave_request/leaverequest_edit.html',context)
+        messages.error(request,'You Cant edit Beacause its approved!!')
+        params = request.GET.copy()
+        redirect_url = reverse('leaverequest_list')
+        if params:
+            redirect_url += '?' + params.urlencode()
+            return redirect(redirect_url)
+        return redirect(redirect_url)
         
         
 @custom_login_required
@@ -445,8 +455,11 @@ def delete_leave(request, pk=None):
     user = request.user
     try:
         leave_request = get_object_or_404(LeaveRequest, pk=pk,user=user)
-        leave_request.delete()
-        messages.success(request,'Leave deleted')
+        if leave_request.status == 'Inactive': 
+            leave_request.delete()
+            messages.success(request,'Leave deleted')
+        else:
+            messages.error(request,'You cant delete Beacause its approved!!')
     except LeaveRequest.DoesNotExist:
         messages.error(request,'Permission denied')
     success_url = reverse('leaverequest_list')
